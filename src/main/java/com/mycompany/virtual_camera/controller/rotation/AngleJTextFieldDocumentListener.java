@@ -19,12 +19,12 @@ public class AngleJTextFieldDocumentListener implements DocumentListener {
     private final ActionListenerForTimer actionListenerForTimer = new ActionListenerForTimer();
     private final javax.swing.Timer timer = new Timer(DELAY, actionListenerForTimer);
     
-    private final JTextField angleJTextField;
     private final ViewportModel viewportModel;
+    private final JTextField angleJTextField;
     
-    public AngleJTextFieldDocumentListener(JTextField angleJTextField, ViewportModel viewportModel) {
-        this.angleJTextField = angleJTextField;
+    public AngleJTextFieldDocumentListener(ViewportModel viewportModel, JTextField angleJTextField) {
         this.viewportModel = viewportModel;
+        this.angleJTextField = angleJTextField;
     }
     
     private void doUpdate() {
