@@ -19,12 +19,12 @@ public class StepJTextFieldDocumentListener implements DocumentListener {
     private final ActionListenerForTimer actionListenerForTimer = new ActionListenerForTimer();
     private final javax.swing.Timer timer = new Timer(DELAY, actionListenerForTimer);
     
-    private final JTextField stepJTextField;
     private final ViewportModel viewportModel;
+    private final JTextField stepJTextField;
     
-    public StepJTextFieldDocumentListener(JTextField stepJTextField, ViewportModel viewportModel) {
-        this.stepJTextField = stepJTextField;
+    public StepJTextFieldDocumentListener(ViewportModel viewportModel, JTextField stepJTextField) {
         this.viewportModel = viewportModel;
+        this.stepJTextField = stepJTextField;
     }
     
     private void doUpdate() {
