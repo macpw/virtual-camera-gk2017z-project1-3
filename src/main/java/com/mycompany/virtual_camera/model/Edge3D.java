@@ -1,7 +1,6 @@
 package com.mycompany.virtual_camera.model;
 
 import java.awt.Color;
-import java.util.Objects;
 
 /**
  *
