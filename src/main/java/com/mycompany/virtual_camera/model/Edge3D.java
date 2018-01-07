@@ -75,33 +75,4 @@ public class Edge3D {
     public String toString() {
         return "Edge3D{" + "first=" + first + ", second=" + second + ", color=" + color + '}';
     }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 97 * hash + Objects.hashCode(this.first);
-        hash = 97 * hash + Objects.hashCode(this.second);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Edge3D other = (Edge3D) obj;
-        if (!Objects.equals(this.first, other.first)) {
-            return false;
-        }
-        if (!Objects.equals(this.second, other.second)) {
-            return false;
-        }
-        return true;
-    }
 }
