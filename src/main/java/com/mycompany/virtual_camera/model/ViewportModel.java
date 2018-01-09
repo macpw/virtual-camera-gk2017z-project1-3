@@ -273,6 +273,18 @@ public class ViewportModel extends Observable {
         }
     }
     
+        private void updatePoint3DsSet(RealMatrix transformationMatrix) {
+        for (Point3D point3D : point3DsSet) {
+            RealMatrix coordinates = point3D.getCoordinates();
+            point3D.setCoordinates(transformationMatrix.multiply(coordinates));
+            if (point3D.getZ() > distanceBetweenObserverAndViewport) {
+                point3D.setInFrontOfViewport(true);
+            } else {
+                point3D.setInFrontOfViewport(false);
+            }
+        }
+    }
+    
     private void updateEdge3DToLine2DHolderMap() {
         for (Map.Entry<Edge3D, Line2DHolder> entry : edge3DToLine2DHolderMap.entrySet()) {
             Edge3D keyEdge3D = entry.getKey();
@@ -347,60 +359,42 @@ public class ViewportModel extends Observable {
     // motions
     public void moveForward() {
         RealMatrix moveForwardMatrix = geometricTransformationMatrices[MOVE_FORWARD];
-        for (Point3D point3D : point3DsSet) {
-            RealMatrix coordinates = point3D.getCoordinates();
-            point3D.setCoordinates(moveForwardMatrix.multiply(coordinates));
-        }
+        this.updatePoint3DsSet(moveForwardMatrix);
         this.updateEdge3DToLine2DHolderMap();
         this.setChanged();
         this.notifyObservers();
     }
     public void moveBackward() {
         RealMatrix moveBackwardMatrix = geometricTransformationMatrices[MOVE_BACKWARD];
-        for (Point3D point3D : point3DsSet) {
-            RealMatrix coordinates = point3D.getCoordinates();
-            point3D.setCoordinates(moveBackwardMatrix.multiply(coordinates));
-        }
+        this.updatePoint3DsSet(moveBackwardMatrix);
         this.updateEdge3DToLine2DHolderMap();
         this.setChanged();
         this.notifyObservers();
     }
     public void moveLeft() {
         RealMatrix moveLeftMatrix = geometricTransformationMatrices[MOVE_LEFT];
-        for (Point3D point3D : point3DsSet) {
-            RealMatrix coordinates = point3D.getCoordinates();
-            point3D.setCoordinates(moveLeftMatrix.multiply(coordinates));
-        }
+        this.updatePoint3DsSet(moveLeftMatrix);
         this.updateEdge3DToLine2DHolderMap();
         this.setChanged();
         this.notifyObservers();
     }
     public void moveRight() {
         RealMatrix moveRightMatrix = geometricTransformationMatrices[MOVE_RIGHT];
-        for (Point3D point3D : point3DsSet) {
-            RealMatrix coordinates = point3D.getCoordinates();
-            point3D.setCoordinates(moveRightMatrix.multiply(coordinates));
-        }
+        this.updatePoint3DsSet(moveRightMatrix);
         this.updateEdge3DToLine2DHolderMap();
         this.setChanged();
         this.notifyObservers();
     }
     public void moveUpward() {
         RealMatrix moveUpwardMatrix = geometricTransformationMatrices[MOVE_UPWARD];
-        for (Point3D point3D : point3DsSet) {
-            RealMatrix coordinates = point3D.getCoordinates();
-            point3D.setCoordinates(moveUpwardMatrix.multiply(coordinates));
-        }
+        this.updatePoint3DsSet(moveUpwardMatrix);
         this.updateEdge3DToLine2DHolderMap();
         this.setChanged();
         this.notifyObservers();
     }
     public void moveDownward() {
         RealMatrix moveDownwardMatrix = geometricTransformationMatrices[MOVE_DOWNWARD];
-        for (Point3D point3D : point3DsSet) {
-            RealMatrix coordinates = point3D.getCoordinates();
-            point3D.setCoordinates(moveDownwardMatrix.multiply(coordinates));
-        }
+        this.updatePoint3DsSet(moveDownwardMatrix);
         this.updateEdge3DToLine2DHolderMap();
         this.setChanged();
         this.notifyObservers();
@@ -408,60 +402,42 @@ public class ViewportModel extends Observable {
     // rotations
     public void rotateLeft() {
         RealMatrix rotateLeftMatrix = geometricTransformationMatrices[ROTATE_LEFT];
-        for (Point3D point3D : point3DsSet) {
-            RealMatrix coordinates = point3D.getCoordinates();
-            point3D.setCoordinates(rotateLeftMatrix.multiply(coordinates));
-        }
+        this.updatePoint3DsSet(rotateLeftMatrix);
         this.updateEdge3DToLine2DHolderMap();
         this.setChanged();
         this.notifyObservers();
     }
     public void rotateRight() {
         RealMatrix rotateRightMatrix = geometricTransformationMatrices[ROTATE_RIGHT];
-        for (Point3D point3D : point3DsSet) {
-            RealMatrix coordinates = point3D.getCoordinates();
-            point3D.setCoordinates(rotateRightMatrix.multiply(coordinates));
-        }
+        this.updatePoint3DsSet(rotateRightMatrix);
         this.updateEdge3DToLine2DHolderMap();
         this.setChanged();
         this.notifyObservers();
     }
     public void rotateUpward() {
         RealMatrix rotateUpwardMatrix = geometricTransformationMatrices[ROTATE_UPWARD];
-        for (Point3D point3D : point3DsSet) {
-            RealMatrix coordinates = point3D.getCoordinates();
-            point3D.setCoordinates(rotateUpwardMatrix.multiply(coordinates));
-        }
+        this.updatePoint3DsSet(rotateUpwardMatrix);
         this.updateEdge3DToLine2DHolderMap();
         this.setChanged();
         this.notifyObservers();
     }
     public void rotateDownward() {
         RealMatrix rotateDownwardMatrix = geometricTransformationMatrices[ROTATE_DOWNWARD];
-        for (Point3D point3D : point3DsSet) {
-            RealMatrix coordinates = point3D.getCoordinates();
-            point3D.setCoordinates(rotateDownwardMatrix.multiply(coordinates));
-        }
+        this.updatePoint3DsSet(rotateDownwardMatrix);
         this.updateEdge3DToLine2DHolderMap();
         this.setChanged();
         this.notifyObservers();
     }
     public void rotateTiltLeft() {
         RealMatrix rotateTiltLeftMatrix = geometricTransformationMatrices[ROTATE_TILT_LEFT];
-        for (Point3D point3D : point3DsSet) {
-            RealMatrix coordinates = point3D.getCoordinates();
-            point3D.setCoordinates(rotateTiltLeftMatrix.multiply(coordinates));
-        }
+        this.updatePoint3DsSet(rotateTiltLeftMatrix);
         this.updateEdge3DToLine2DHolderMap();
         this.setChanged();
         this.notifyObservers();
     }
     public void rotateTiltRight() {
         RealMatrix rotateTiltRightMatrix = geometricTransformationMatrices[ROTATE_TILT_RIGHT];
-        for (Point3D point3D : point3DsSet) {
-            RealMatrix coordinates = point3D.getCoordinates();
-            point3D.setCoordinates(rotateTiltRightMatrix.multiply(coordinates));
-        }
+        this.updatePoint3DsSet(rotateTiltRightMatrix);
         this.updateEdge3DToLine2DHolderMap();
         this.setChanged();
         this.notifyObservers();
