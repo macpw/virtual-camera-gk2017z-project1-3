@@ -14,6 +14,7 @@ public class Point3D implements Comparable<Point3D> {
     
     private final RealMatrix coordinates;// homogeneous coordinates
     private final Point2D point2D = new Point2D.Double();
+    private boolean inFrontOfViewport;
     
     public Point3D() {
         this.coordinates = MatrixUtils.createColumnRealMatrix(new double[]{0,0,0,1});
@@ -65,6 +66,14 @@ public class Point3D implements Comparable<Point3D> {
     
     public Point2D getPoint2D() {
         return point2D;
+    }
+    
+    public boolean isInFrontOfViewport() {
+        return inFrontOfViewport;
+    }
+    
+    public void setInFrontOfViewport(boolean inFrontOfViewport) {
+        this.inFrontOfViewport = inFrontOfViewport;
     }
     
     // Methods
