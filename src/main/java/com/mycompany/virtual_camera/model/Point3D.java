@@ -1,5 +1,6 @@
 package com.mycompany.virtual_camera.model;
 
+import java.util.Comparator;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
@@ -94,6 +95,30 @@ public class Point3D implements Comparable<Point3D> {
             return Double.compare(thisY, otherY);
         } else {                                        // thisY == otherY
             return Double.compare(thisX, otherX);
+        }
+    }
+    
+    public static class ZComparator implements Comparator<Point3D> {
+        
+        @Override
+        public int compare(Point3D o1, Point3D o2) {
+            return Double.compare(o1.getZ(), o2.getZ());
+        }
+    }
+    
+    public static class YComparator implements Comparator<Point3D> {
+        
+        @Override
+        public int compare(Point3D o1, Point3D o2) {
+            return Double.compare(o1.getY(), o2.getY());
+        }
+    }
+    
+    public static class XComparator implements Comparator<Point3D> {
+        
+        @Override
+        public int compare(Point3D o1, Point3D o2) {
+            return Double.compare(o1.getX(), o2.getX());
         }
     }
 }
