@@ -11,6 +11,8 @@ public class Edge3D {
     private final Point3D first;
     private final Point3D second;
     private Color color;
+    private final Point3D firstMock = new Point3D();
+    private final Point3D secondMock = new Point3D();
     
     public Edge3D(Point3D first, Point3D second) throws NullPointerException {
         if (first == null) {
@@ -52,6 +54,14 @@ public class Edge3D {
     
     public void setColor(Color color) {
         this.color = color;
+    }
+    
+    public Point3D getFirstMock() {
+        return firstMock;
+    }
+    
+    public Point3D getSecondMock() {
+        return secondMock;
     }
     
     // Methods
