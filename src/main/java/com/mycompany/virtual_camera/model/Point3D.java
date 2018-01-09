@@ -1,6 +1,5 @@
 package com.mycompany.virtual_camera.model;
 
-import java.util.Objects;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
@@ -79,30 +78,5 @@ public class Point3D {
     @Override
     public String toString() {
         return "Point3D{" + "coordinates=" + coordinates + '}';
-    }
-    
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 37 * hash + Objects.hashCode(this.coordinates);
-        return hash;
-    }
-    
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Point3D other = (Point3D) obj;
-        if (!Objects.equals(this.coordinates, other.coordinates)) {
-            return false;
-        }
-        return true;
     }
 }
