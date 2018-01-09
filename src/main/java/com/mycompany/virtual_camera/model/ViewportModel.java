@@ -305,19 +305,6 @@ public class ViewportModel extends Observable {
         }
     }
     
-    private void calculatePoint2D(Point3D point3D) {
-        double x = (point3D.getX() * distanceBetweenObserverAndViewport) / point3D.getZ();
-        double y = (point3D.getY() * distanceBetweenObserverAndViewport) / point3D.getZ();
-        x =  x + (viewportWidth  / 2.0d);
-        y = -y + (viewportHeight / 2.0d);
-        point3D.getPoint2D().setLocation(x, y);
-        if (point3D.getZ() > distanceBetweenObserverAndViewport) {
-            point3D.setInFrontOfViewport(true);
-        } else {
-            point3D.setInFrontOfViewport(false);
-        }
-    }
-    
     // calculate line and plane intersection
     private Point3D calculateMockPoint3D(Point3D firstPoint3D, Point3D secondPoint3D) {
         //point
@@ -355,6 +342,19 @@ public class ViewportModel extends Observable {
         double t = (-sum_Apx_Bpy_Cpz_D)/sum_Avx_Bvy_Cvz;
         Point3D mockPoint3D = new Point3D(px + t*vx, py + t*vy, pz + t*vz);
         return mockPoint3D;
+    }
+    
+    private void calculatePoint2D(Point3D point3D) {
+        double x = (point3D.getX() * distanceBetweenObserverAndViewport) / point3D.getZ();
+        double y = (point3D.getY() * distanceBetweenObserverAndViewport) / point3D.getZ();
+        x =  x + (viewportWidth  / 2.0d);
+        y = -y + (viewportHeight / 2.0d);
+        point3D.getPoint2D().setLocation(x, y);
+        if (point3D.getZ() > distanceBetweenObserverAndViewport) {
+            point3D.setInFrontOfViewport(true);
+        } else {
+            point3D.setInFrontOfViewport(false);
+        }
     }
     
     private void updatePoint3DsSet(RealMatrix transformationMatrix) {
