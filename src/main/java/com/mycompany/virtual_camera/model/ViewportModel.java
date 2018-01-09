@@ -273,18 +273,6 @@ public class ViewportModel extends Observable {
         }
     }
     
-        private void updatePoint3DsSet(RealMatrix transformationMatrix) {
-        for (Point3D point3D : point3DsSet) {
-            RealMatrix coordinates = point3D.getCoordinates();
-            point3D.setCoordinates(transformationMatrix.multiply(coordinates));
-            if (point3D.getZ() > distanceBetweenObserverAndViewport) {
-                point3D.setInFrontOfViewport(true);
-            } else {
-                point3D.setInFrontOfViewport(false);
-            }
-        }
-    }
-    
     private void updateEdge3DToLine2DHolderMap() {
         for (Map.Entry<Edge3D, Line2DHolder> entry : edge3DToLine2DHolderMap.entrySet()) {
             Edge3D keyEdge3D = entry.getKey();
@@ -354,6 +342,18 @@ public class ViewportModel extends Observable {
         double t = (-sum_Apx_Bpy_Cpz_D)/sum_Avx_Bvy_Cvz;
         Point3D mockPoint3D = new Point3D(px + t*vx, py + t*vy, pz + t*vz);
         return mockPoint3D;
+    }
+    
+    private void updatePoint3DsSet(RealMatrix transformationMatrix) {
+        for (Point3D point3D : point3DsSet) {
+            RealMatrix coordinates = point3D.getCoordinates();
+            point3D.setCoordinates(transformationMatrix.multiply(coordinates));
+            if (point3D.getZ() > distanceBetweenObserverAndViewport) {
+                point3D.setInFrontOfViewport(true);
+            } else {
+                point3D.setInFrontOfViewport(false);
+            }
+        }
     }
     
     // motions
