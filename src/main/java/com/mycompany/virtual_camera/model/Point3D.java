@@ -8,7 +8,7 @@ import org.apache.commons.math3.linear.RealMatrix;
  *
  * @author Paweł Mac
  */
-public class Point3D {
+public class Point3D implements Comparable<Point3D> {
     
     private final RealMatrix coordinates;// homogeneous coordinates
     
@@ -78,5 +78,22 @@ public class Point3D {
     @Override
     public String toString() {
         return "Point3D{" + "coordinates=" + coordinates + '}';
+    }
+    
+    @Override
+    public int compareTo(Point3D other) {
+        double thisX = this.getX();
+        double thisY = this.getY();
+        double thisZ = this.getZ();
+        double otherX = other.getX();
+        double otherY = other.getY();
+        double otherZ = other.getZ();
+        if (Double.compare(thisZ, otherZ) != 0) {
+            return Double.compare(thisZ, otherZ);
+        } else if (Double.compare(thisY, otherY) != 0) {// thisZ == otherZ
+            return Double.compare(thisY, otherY);
+        } else {                                        // thisY == otherY
+            return Double.compare(thisX, otherX);
+        }
     }
 }
