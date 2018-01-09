@@ -1,6 +1,7 @@
 package com.mycompany.virtual_camera.model;
 
 import java.awt.Color;
+import java.awt.geom.Line2D;
 
 /**
  *
@@ -13,6 +14,7 @@ public class Edge3D {
     private Color color;
     private final Point3D firstMock = new Point3D();
     private final Point3D secondMock = new Point3D();
+    private final Line2D line2D = new Line2D.Double();
     
     public Edge3D(Point3D first, Point3D second) throws NullPointerException {
         if (first == null) {
@@ -62,6 +64,10 @@ public class Edge3D {
     
     public Point3D getSecondMock() {
         return secondMock;
+    }
+    
+    public Line2D getLine2D() {
+        return line2D;
     }
     
     // Methods
