@@ -72,6 +72,15 @@ public class Edge3D {
     
     // Methods
     
+    void updateMockPoints() {
+        firstMock.setCoordinates(first.getCoordinates());
+        firstMock.getPoint2D().setLocation(first.getPoint2D());
+        firstMock.setInFrontOfViewport(first.isInFrontOfViewport());
+        secondMock.setCoordinates(second.getCoordinates());
+        secondMock.getPoint2D().setLocation(second.getPoint2D());
+        secondMock.setInFrontOfViewport(second.isInFrontOfViewport());
+    }
+    
     @Override
     public String toString() {
         return "Edge3D{" + "first=" + first + ", second=" + second + ", color=" + color + '}';
