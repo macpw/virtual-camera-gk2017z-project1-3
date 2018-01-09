@@ -1,5 +1,6 @@
 package com.mycompany.virtual_camera.model;
 
+import java.awt.geom.Point2D;
 import java.util.Comparator;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.MatrixUtils;
@@ -12,6 +13,7 @@ import org.apache.commons.math3.linear.RealMatrix;
 public class Point3D implements Comparable<Point3D> {
     
     private final RealMatrix coordinates;// homogeneous coordinates
+    private final Point2D point2D = new Point2D.Double();
     
     public Point3D() {
         this.coordinates = MatrixUtils.createColumnRealMatrix(new double[]{0,0,0,1});
@@ -61,6 +63,10 @@ public class Point3D implements Comparable<Point3D> {
         coordinates.setEntry(2, 0, z);
     }
     
+    public Point2D getPoint2D() {
+        return point2D;
+    }
+    
     // Methods
     
     public void normalize() {
@@ -101,24 +107,24 @@ public class Point3D implements Comparable<Point3D> {
     public static class ZComparator implements Comparator<Point3D> {
         
         @Override
-        public int compare(Point3D o1, Point3D o2) {
-            return Double.compare(o1.getZ(), o2.getZ());
+        public int compare(Point3D p1, Point3D p2) {
+            return Double.compare(p1.getZ(), p2.getZ());
         }
     }
     
     public static class YComparator implements Comparator<Point3D> {
         
         @Override
-        public int compare(Point3D o1, Point3D o2) {
-            return Double.compare(o1.getY(), o2.getY());
+        public int compare(Point3D p1, Point3D p2) {
+            return Double.compare(p1.getY(), p2.getY());
         }
     }
     
     public static class XComparator implements Comparator<Point3D> {
         
         @Override
-        public int compare(Point3D o1, Point3D o2) {
-            return Double.compare(o1.getX(), o2.getX());
+        public int compare(Point3D p1, Point3D p2) {
+            return Double.compare(p1.getX(), p2.getX());
         }
     }
 }
