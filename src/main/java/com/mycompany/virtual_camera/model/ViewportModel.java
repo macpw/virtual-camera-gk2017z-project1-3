@@ -36,8 +36,6 @@ public class ViewportModel extends Observable {
     private final int viewportWidth;
     private final int viewportHeight;
     
-    private Map<Edge3D, Line2DHolder> edge3DToLine2DHolderMap;
-    private Map<Edge3D, Edge3D> edge3DToMockEdge3D;
     
     private double step = 10.0d;
     private double angleInDegrees = 1.0d;
@@ -49,9 +47,6 @@ public class ViewportModel extends Observable {
         this.viewportWidth = viewportWidth;
         this.viewportHeight = viewportHeight;
         
-        this.edge3DToLine2DHolderMap = new HashMap<>();
-        this.edge3DToMockEdge3D = new HashMap<>();
-        this.initEdge3DToLine2DHolderMap();// init edge3DToMockEdge3D inside
         this.initGeometricTransformationMatrices();
         
         this.updatePoint3DsSet(geometricTransformationMatrices[IDENTITY_MATRIX]);
@@ -95,10 +90,6 @@ public class ViewportModel extends Observable {
     
     public int getViewportHeight() {
         return viewportHeight;
-    }
-    
-    public Collection<Line2DHolder> getCollectionOfLine2DHolder() {
-        return edge3DToLine2DHolderMap.values();
     }
     
     public Set<Edge3D> getEdge3DsSet() {
@@ -252,73 +243,6 @@ public class ViewportModel extends Observable {
         geometricTransformationMatrices[ROTATE_TILT_RIGHT_MATRIX].setEntry(1, 1,  cosPositiveAngle);
     }
     
-    private void initEdge3DToLine2DHolderMap() {
-        for (Edge3D edge3D : edge3DsSet) {
-            Line2D line2D = new Line2D.Double(0.0d, 0.0d, 0.0d, 0.0d);
-            Line2DHolder line2DHolder = new Line2DHolder(line2D);
-            this.calculateLine2DOnViewport(edge3D, line2DHolder);
-            this.edge3DToLine2DHolderMap.put(edge3D, line2DHolder);
-            // init edge3DToMockEdge3D
-            this.edge3DToMockEdge3D.put(edge3D, new Edge3D(new Point3D(), new Point3D()));
-        }
-    }
-    
-    private void calculateLine2DOnViewport(Edge3D edge3D, Line2DHolder line2DHolder) {
-        double x1 = (edge3D.getFirst() .getX() * focalDistance) / edge3D.getFirst() .getZ();
-        double y1 = (edge3D.getFirst() .getY() * focalDistance) / edge3D.getFirst() .getZ();
-        double x2 = (edge3D.getSecond().getX() * focalDistance) / edge3D.getSecond().getZ();
-        double y2 = (edge3D.getSecond().getY() * focalDistance) / edge3D.getSecond().getZ();
-        x1 =  x1 + (viewportWidth  / 2.0d);
-        y1 = -y1 + (viewportHeight / 2.0d);
-        x2 =  x2 + (viewportWidth  / 2.0d);
-        y2 = -y2 + (viewportHeight / 2.0d);
-        line2DHolder.getLine2D().setLine(x1, y1, x2, y2);
-        
-        if (edge3D.getFirst().getZ() > focalDistance) {
-            line2DHolder.setFirstInFrontOfViewport(true);
-        } else {
-            line2DHolder.setFirstInFrontOfViewport(false);
-        }
-        
-        if (edge3D.getSecond().getZ() > focalDistance) {
-            line2DHolder.setSecondInFrontOfViewport(true);
-        } else {
-            line2DHolder.setSecondInFrontOfViewport(false);
-        }
-    }
-    
-    private void updateEdge3DToLine2DHolderMap() {
-        for (Map.Entry<Edge3D, Line2DHolder> entry : edge3DToLine2DHolderMap.entrySet()) {
-            Edge3D keyEdge3D = entry.getKey();
-            Line2DHolder valueLine2DHolder = entry.getValue();
-            // before calculateLine2DOnViewport(edge3D, line2DHolder)
-            // mockEdge3D if necessery
-            Point3D firstPoint3D  = keyEdge3D.getFirst();
-            Point3D secondPoint3D = keyEdge3D.getSecond();
-            if (        (firstPoint3D.getZ() <= focalDistance || secondPoint3D.getZ() <= focalDistance) 
-                    && !(firstPoint3D.getZ() <= focalDistance && secondPoint3D.getZ() <= focalDistance)) {
-                Edge3D mockEdge3D = edge3DToMockEdge3D.get(keyEdge3D);
-                // update mockEdge3D by updating ponits
-                Point3D firstMockPoint3D = mockEdge3D.getFirst();
-                firstMockPoint3D.setCoordinates(firstPoint3D.getCoordinates());
-                Point3D secondMockPoint3D = mockEdge3D.getSecond();
-                secondMockPoint3D.setCoordinates(secondPoint3D.getCoordinates());
-                // mock one of points
-                if (firstMockPoint3D.getZ() <= focalDistance) {
-                    Point3D calculatedFirstMockPoint3D = calculateMockPoint3D(firstMockPoint3D, secondMockPoint3D);
-                    firstMockPoint3D.setCoordinates(calculatedFirstMockPoint3D.getCoordinates());
-                } else {
-                    Point3D calculatedSecondMockPoint3D = calculateMockPoint3D(secondMockPoint3D, firstMockPoint3D);
-                    secondMockPoint3D.setCoordinates(calculatedSecondMockPoint3D.getCoordinates());
-                }
-                // mock edge3D
-                keyEdge3D = mockEdge3D;
-            }
-            // now calculate
-            this.calculateLine2DOnViewport(keyEdge3D, valueLine2DHolder);
-        }
-    }
-    
     private void updateEdge3DsSet() {
         for (Edge3D edge3D : edge3DsSet) {
             edge3D.updateMockPoints();
@@ -411,7 +335,6 @@ public class ViewportModel extends Observable {
     private void update(RealMatrix transformationMatrix) {
         this.updatePoint3DsSet(transformationMatrix);
         this.updateEdge3DsSet();
-        this.updateEdge3DToLine2DHolderMap();
         this.setChanged();
         this.notifyObservers();
     }
