@@ -317,15 +317,18 @@ public class ViewportModel extends Observable {
             edge3D.updateMockPoints();
             Point3D firstMock = edge3D.getFirstMock();
             Point3D secondMock = edge3D.getSecondMock();
-            if (!firstMock.isInFrontOfViewport()) {
-                Point3D calculatedFirstMockPoint3D = this.calculateMockPoint3D(firstMock, secondMock);
-                firstMock.setCoordinates(calculatedFirstMockPoint3D.getCoordinates());
-                this.calculatePoint2D(firstMock);
-            }
-            if (!secondMock.isInFrontOfViewport()) {
-                Point3D calculatedSecondMockPoint3D = this.calculateMockPoint3D(secondMock, firstMock);
-                secondMock.setCoordinates(calculatedSecondMockPoint3D.getCoordinates());
-                this.calculatePoint2D(secondMock);
+            if ( (!firstMock.isInFrontOfViewport() || !secondMock.isInFrontOfViewport()) && 
+                !(!firstMock.isInFrontOfViewport() && !secondMock.isInFrontOfViewport())) {
+                if (!firstMock.isInFrontOfViewport()) {
+                    Point3D calculatedFirstMockPoint3D = this.calculateMockPoint3D(firstMock, secondMock);
+                    firstMock.setCoordinates(calculatedFirstMockPoint3D.getCoordinates());
+                    this.calculatePoint2D(firstMock);
+                }
+                if (!secondMock.isInFrontOfViewport()) {
+                    Point3D calculatedSecondMockPoint3D = this.calculateMockPoint3D(secondMock, firstMock);
+                    secondMock.setCoordinates(calculatedSecondMockPoint3D.getCoordinates());
+                    this.calculatePoint2D(secondMock);
+                }
             }
             Point3D first = edge3D.getFirst();
             Point3D second = edge3D.getSecond();
