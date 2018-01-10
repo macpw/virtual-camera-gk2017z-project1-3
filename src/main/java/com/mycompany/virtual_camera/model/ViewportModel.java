@@ -15,20 +15,20 @@ import org.apache.commons.math3.linear.RealMatrix;
  */
 public class ViewportModel extends Observable {
     
-    private static final int 
-            MOVE_FORWARD       = 0,
-            MOVE_BACKWARD      = 1,
-            MOVE_LEFT          = 2,
-            MOVE_RIGHT         = 3,
-            MOVE_UPWARD        = 4,
-            MOVE_DOWNWARD      = 5,
-            ROTATE_LEFT        = 6,
-            ROTATE_RIGHT       = 7,
-            ROTATE_UPWARD      = 8,
-            ROTATE_DOWNWARD    = 9,
-            ROTATE_TILT_LEFT   = 10,
-            ROTATE_TILT_RIGHT  = 11,
-            NUMBER_OF_MATRICES = 12;
+    private static final int IDENTITY_MATRIX          =  0;
+    private static final int MOVE_FORWARD_MATRIX      =  1;
+    private static final int MOVE_BACKWARD_MATRIX     =  2;
+    private static final int MOVE_LEFT_MATRIX         =  3;
+    private static final int MOVE_RIGHT_MATRIX        =  4;
+    private static final int MOVE_UPWARD_MATRIX       =  5;
+    private static final int MOVE_DOWNWARD_MATRIX     =  6;
+    private static final int ROTATE_LEFT_MATRIX       =  7;
+    private static final int ROTATE_RIGHT_MATRIX      =  8;
+    private static final int ROTATE_UPWARD_MATRIX     =  9;
+    private static final int ROTATE_DOWNWARD_MATRIX   = 10;
+    private static final int ROTATE_TILT_LEFT_MATRIX  = 11;
+    private static final int ROTATE_TILT_RIGHT_MATRIX = 12;
+    private static final int NUMBER_OF_MATRICES        = 13;
     
     private Set<Point3D> point3DsSet;
     private Set<Edge3D> edge3DsSet;
@@ -55,7 +55,7 @@ public class ViewportModel extends Observable {
         this.initEdge3DToLine2DHolderMap();// init edge3DToMockEdge3D inside
         this.initGeometricTransformationMatrices();
         
-        this.updatePoint3DsSet(MatrixUtils.createRealIdentityMatrix(4));
+        this.updatePoint3DsSet(geometricTransformationMatrices[IDENTITY_MATRIX]);
         this.updateEdge3DsSet();
     }
     
@@ -67,9 +67,7 @@ public class ViewportModel extends Observable {
     
     public void setDistanceBetweenObserverAndViewport(double distanceBetweenObserverAndViewport) {
         this.distanceBetweenObserverAndViewport = distanceBetweenObserverAndViewport;
-        this.updateEdge3DToLine2DHolderMap();
-        this.setChanged();
-        this.notifyObservers();
+        this.update(geometricTransformationMatrices[IDENTITY_MATRIX]);
     }
     
     public double getStep() {
@@ -111,6 +109,16 @@ public class ViewportModel extends Observable {
     // Methods
     
     private void initGeometricTransformationMatrices() {
+        /****************
+         *   identity   *
+         *    matrix    *
+         * ⌈1, 0, 0, 0⌉ *
+         * |0, 1, 0, 0| *
+         * |0, 0, 1, 0| *
+         * ⌊0, 0, 0, 1⌋ *
+         ****************/
+        geometricTransformationMatrices[IDENTITY_MATRIX] = MatrixUtils.createRealIdentityMatrix(4);
+        
         /*****************
          *  translation  *
          *     matrix    *
@@ -119,37 +127,37 @@ public class ViewportModel extends Observable {
          * |0, 0, 1, Tz| *
          * ⌊0, 0, 0,  1⌋ *
          *****************/
-        geometricTransformationMatrices[MOVE_FORWARD] = MatrixUtils.createRealMatrix(new double[][]{
+        geometricTransformationMatrices[MOVE_FORWARD_MATRIX] = MatrixUtils.createRealMatrix(new double[][]{
             {1, 0, 0, 0},
             {0, 1, 0, 0},
             {0, 0, 1, -step},
             {0, 0, 0, 1},
         });
-        geometricTransformationMatrices[MOVE_BACKWARD] = MatrixUtils.createRealMatrix(new double[][]{
+        geometricTransformationMatrices[MOVE_BACKWARD_MATRIX] = MatrixUtils.createRealMatrix(new double[][]{
             {1, 0, 0, 0},
             {0, 1, 0, 0},
             {0, 0, 1, +step},
             {0, 0, 0, 1},
         });
-        geometricTransformationMatrices[MOVE_LEFT] = MatrixUtils.createRealMatrix(new double[][]{
+        geometricTransformationMatrices[MOVE_LEFT_MATRIX] = MatrixUtils.createRealMatrix(new double[][]{
             {1, 0, 0, +step},
             {0, 1, 0, 0},
             {0, 0, 1, 0},
             {0, 0, 0, 1},
         });
-        geometricTransformationMatrices[MOVE_RIGHT] = MatrixUtils.createRealMatrix(new double[][]{
+        geometricTransformationMatrices[MOVE_RIGHT_MATRIX] = MatrixUtils.createRealMatrix(new double[][]{
             {1, 0, 0, -step},
             {0, 1, 0, 0},
             {0, 0, 1, 0},
             {0, 0, 0, 1},
         });
-        geometricTransformationMatrices[MOVE_UPWARD] = MatrixUtils.createRealMatrix(new double[][]{
+        geometricTransformationMatrices[MOVE_UPWARD_MATRIX] = MatrixUtils.createRealMatrix(new double[][]{
             {1, 0, 0, 0},
             {0, 1, 0, -step},
             {0, 0, 1, 0},
             {0, 0, 0, 1},
         });
-        geometricTransformationMatrices[MOVE_DOWNWARD] = MatrixUtils.createRealMatrix(new double[][]{
+        geometricTransformationMatrices[MOVE_DOWNWARD_MATRIX] = MatrixUtils.createRealMatrix(new double[][]{
             {1, 0, 0, 0},
             {0, 1, 0, +step},
             {0, 0, 1, 0},
@@ -166,37 +174,37 @@ public class ViewportModel extends Observable {
          *************************************************************************************/
         double angleInRadians = Math.toRadians(angleInDegrees);
         
-        geometricTransformationMatrices[ROTATE_LEFT] = MatrixUtils.createRealMatrix(new double[][]{
+        geometricTransformationMatrices[ROTATE_LEFT_MATRIX] = MatrixUtils.createRealMatrix(new double[][]{
             { Math.cos(angleInRadians), 0, Math.sin(angleInRadians), 0},
             {                        0, 1,                        0, 0},
             {-Math.sin(angleInRadians), 0, Math.cos(angleInRadians), 0},
             {                        0, 0,                        0, 1},
         });
-        geometricTransformationMatrices[ROTATE_RIGHT] = MatrixUtils.createRealMatrix(new double[][]{
+        geometricTransformationMatrices[ROTATE_RIGHT_MATRIX] = MatrixUtils.createRealMatrix(new double[][]{
             { Math.cos(-angleInRadians), 0, Math.sin(-angleInRadians), 0},
             {                         0, 1,                         0, 0},
             {-Math.sin(-angleInRadians), 0, Math.cos(-angleInRadians), 0},
             {                         0, 0,                         0, 1},
         });
-        geometricTransformationMatrices[ROTATE_UPWARD] = MatrixUtils.createRealMatrix(new double[][]{
+        geometricTransformationMatrices[ROTATE_UPWARD_MATRIX] = MatrixUtils.createRealMatrix(new double[][]{
             { 1,                        0,                         0, 0},
             { 0, Math.cos(angleInRadians), -Math.sin(angleInRadians), 0},
             { 0, Math.sin(angleInRadians),  Math.cos(angleInRadians), 0},
             { 0,                        0,                         0, 1},
         });
-        geometricTransformationMatrices[ROTATE_DOWNWARD] = MatrixUtils.createRealMatrix(new double[][]{
+        geometricTransformationMatrices[ROTATE_DOWNWARD_MATRIX] = MatrixUtils.createRealMatrix(new double[][]{
             { 1,                         0,                          0, 0},
             { 0, Math.cos(-angleInRadians), -Math.sin(-angleInRadians), 0},
             { 0, Math.sin(-angleInRadians),  Math.cos(-angleInRadians), 0},
             { 0,                         0,                          0, 1},
         });
-        geometricTransformationMatrices[ROTATE_TILT_LEFT] = MatrixUtils.createRealMatrix(new double[][]{
+        geometricTransformationMatrices[ROTATE_TILT_LEFT_MATRIX] = MatrixUtils.createRealMatrix(new double[][]{
             { Math.cos(-angleInRadians), -Math.sin(-angleInRadians), 0, 0},
             { Math.sin(-angleInRadians),  Math.cos(-angleInRadians), 0, 0},
             {                         0,                          0, 1, 0},
             {                         0,                          0, 0, 1},
         });
-        geometricTransformationMatrices[ROTATE_TILT_RIGHT] = MatrixUtils.createRealMatrix(new double[][]{
+        geometricTransformationMatrices[ROTATE_TILT_RIGHT_MATRIX] = MatrixUtils.createRealMatrix(new double[][]{
             { Math.cos(angleInRadians), -Math.sin(angleInRadians), 0, 0},
             { Math.sin(angleInRadians),  Math.cos(angleInRadians), 0, 0},
             {                        0,                         0, 1, 0},
@@ -205,12 +213,12 @@ public class ViewportModel extends Observable {
     }
     
     private void updateMoveMatrices() {
-        geometricTransformationMatrices[MOVE_FORWARD] .setEntry(2, 3, -step);
-        geometricTransformationMatrices[MOVE_BACKWARD].setEntry(2, 3, +step);
-        geometricTransformationMatrices[MOVE_LEFT]    .setEntry(0, 3, +step);
-        geometricTransformationMatrices[MOVE_RIGHT]   .setEntry(0, 3, -step);
-        geometricTransformationMatrices[MOVE_UPWARD]  .setEntry(1, 3, -step);
-        geometricTransformationMatrices[MOVE_DOWNWARD].setEntry(1, 3, +step);
+        geometricTransformationMatrices[MOVE_FORWARD_MATRIX] .setEntry(2, 3, -step);
+        geometricTransformationMatrices[MOVE_BACKWARD_MATRIX].setEntry(2, 3, +step);
+        geometricTransformationMatrices[MOVE_LEFT_MATRIX]    .setEntry(0, 3, +step);
+        geometricTransformationMatrices[MOVE_RIGHT_MATRIX]   .setEntry(0, 3, -step);
+        geometricTransformationMatrices[MOVE_UPWARD_MATRIX]  .setEntry(1, 3, -step);
+        geometricTransformationMatrices[MOVE_DOWNWARD_MATRIX].setEntry(1, 3, +step);
     }
     
     private void updateRotationMatrices() {
@@ -219,30 +227,30 @@ public class ViewportModel extends Observable {
         double sinPositiveAngle = Math.sin(angleInRadians);
         double cosNegativeAngle = Math.cos(-angleInRadians);
         double sinNegativeAngle = Math.sin(-angleInRadians);
-        geometricTransformationMatrices[ROTATE_LEFT].setEntry(0, 0,  cosPositiveAngle);
-        geometricTransformationMatrices[ROTATE_LEFT].setEntry(0, 2,  sinPositiveAngle);
-        geometricTransformationMatrices[ROTATE_LEFT].setEntry(2, 0, -sinPositiveAngle);
-        geometricTransformationMatrices[ROTATE_LEFT].setEntry(2, 2,  cosPositiveAngle);
-        geometricTransformationMatrices[ROTATE_RIGHT].setEntry(0, 0,  cosNegativeAngle);
-        geometricTransformationMatrices[ROTATE_RIGHT].setEntry(0, 2,  sinNegativeAngle);
-        geometricTransformationMatrices[ROTATE_RIGHT].setEntry(2, 0, -sinNegativeAngle);
-        geometricTransformationMatrices[ROTATE_RIGHT].setEntry(2, 2,  cosNegativeAngle);
-        geometricTransformationMatrices[ROTATE_UPWARD].setEntry(1, 1,  cosPositiveAngle);
-        geometricTransformationMatrices[ROTATE_UPWARD].setEntry(1, 2, -sinPositiveAngle);
-        geometricTransformationMatrices[ROTATE_UPWARD].setEntry(2, 1,  sinPositiveAngle);
-        geometricTransformationMatrices[ROTATE_UPWARD].setEntry(2, 2,  cosPositiveAngle);
-        geometricTransformationMatrices[ROTATE_DOWNWARD].setEntry(1, 1,  cosNegativeAngle);
-        geometricTransformationMatrices[ROTATE_DOWNWARD].setEntry(1, 2, -sinNegativeAngle);
-        geometricTransformationMatrices[ROTATE_DOWNWARD].setEntry(2, 1,  sinNegativeAngle);
-        geometricTransformationMatrices[ROTATE_DOWNWARD].setEntry(2, 2,  cosNegativeAngle);
-        geometricTransformationMatrices[ROTATE_TILT_LEFT].setEntry(0, 0,  cosNegativeAngle);
-        geometricTransformationMatrices[ROTATE_TILT_LEFT].setEntry(0, 1, -sinNegativeAngle);
-        geometricTransformationMatrices[ROTATE_TILT_LEFT].setEntry(1, 0,  sinNegativeAngle);
-        geometricTransformationMatrices[ROTATE_TILT_LEFT].setEntry(1, 1,  cosNegativeAngle);
-        geometricTransformationMatrices[ROTATE_TILT_RIGHT].setEntry(0, 0,  cosPositiveAngle);
-        geometricTransformationMatrices[ROTATE_TILT_RIGHT].setEntry(0, 1, -sinPositiveAngle);
-        geometricTransformationMatrices[ROTATE_TILT_RIGHT].setEntry(1, 0,  sinPositiveAngle);
-        geometricTransformationMatrices[ROTATE_TILT_RIGHT].setEntry(1, 1,  cosPositiveAngle);
+        geometricTransformationMatrices[ROTATE_LEFT_MATRIX].setEntry(0, 0,  cosPositiveAngle);
+        geometricTransformationMatrices[ROTATE_LEFT_MATRIX].setEntry(0, 2,  sinPositiveAngle);
+        geometricTransformationMatrices[ROTATE_LEFT_MATRIX].setEntry(2, 0, -sinPositiveAngle);
+        geometricTransformationMatrices[ROTATE_LEFT_MATRIX].setEntry(2, 2,  cosPositiveAngle);
+        geometricTransformationMatrices[ROTATE_RIGHT_MATRIX].setEntry(0, 0,  cosNegativeAngle);
+        geometricTransformationMatrices[ROTATE_RIGHT_MATRIX].setEntry(0, 2,  sinNegativeAngle);
+        geometricTransformationMatrices[ROTATE_RIGHT_MATRIX].setEntry(2, 0, -sinNegativeAngle);
+        geometricTransformationMatrices[ROTATE_RIGHT_MATRIX].setEntry(2, 2,  cosNegativeAngle);
+        geometricTransformationMatrices[ROTATE_UPWARD_MATRIX].setEntry(1, 1,  cosPositiveAngle);
+        geometricTransformationMatrices[ROTATE_UPWARD_MATRIX].setEntry(1, 2, -sinPositiveAngle);
+        geometricTransformationMatrices[ROTATE_UPWARD_MATRIX].setEntry(2, 1,  sinPositiveAngle);
+        geometricTransformationMatrices[ROTATE_UPWARD_MATRIX].setEntry(2, 2,  cosPositiveAngle);
+        geometricTransformationMatrices[ROTATE_DOWNWARD_MATRIX].setEntry(1, 1,  cosNegativeAngle);
+        geometricTransformationMatrices[ROTATE_DOWNWARD_MATRIX].setEntry(1, 2, -sinNegativeAngle);
+        geometricTransformationMatrices[ROTATE_DOWNWARD_MATRIX].setEntry(2, 1,  sinNegativeAngle);
+        geometricTransformationMatrices[ROTATE_DOWNWARD_MATRIX].setEntry(2, 2,  cosNegativeAngle);
+        geometricTransformationMatrices[ROTATE_TILT_LEFT_MATRIX].setEntry(0, 0,  cosNegativeAngle);
+        geometricTransformationMatrices[ROTATE_TILT_LEFT_MATRIX].setEntry(0, 1, -sinNegativeAngle);
+        geometricTransformationMatrices[ROTATE_TILT_LEFT_MATRIX].setEntry(1, 0,  sinNegativeAngle);
+        geometricTransformationMatrices[ROTATE_TILT_LEFT_MATRIX].setEntry(1, 1,  cosNegativeAngle);
+        geometricTransformationMatrices[ROTATE_TILT_RIGHT_MATRIX].setEntry(0, 0,  cosPositiveAngle);
+        geometricTransformationMatrices[ROTATE_TILT_RIGHT_MATRIX].setEntry(0, 1, -sinPositiveAngle);
+        geometricTransformationMatrices[ROTATE_TILT_RIGHT_MATRIX].setEntry(1, 0,  sinPositiveAngle);
+        geometricTransformationMatrices[ROTATE_TILT_RIGHT_MATRIX].setEntry(1, 1,  cosPositiveAngle);
     }
     
     private void initEdge3DToLine2DHolderMap() {
@@ -411,52 +419,40 @@ public class ViewportModel extends Observable {
     
     // motions
     public void moveForward() {
-        RealMatrix moveForwardMatrix = geometricTransformationMatrices[MOVE_FORWARD];
-        this.update(moveForwardMatrix);
+        this.update(geometricTransformationMatrices[MOVE_FORWARD_MATRIX]);
     }
     public void moveBackward() {
-        RealMatrix moveBackwardMatrix = geometricTransformationMatrices[MOVE_BACKWARD];
-        this.update(moveBackwardMatrix);
+        this.update(geometricTransformationMatrices[MOVE_BACKWARD_MATRIX]);
     }
     public void moveLeft() {
-        RealMatrix moveLeftMatrix = geometricTransformationMatrices[MOVE_LEFT];
-        this.update(moveLeftMatrix);
+        this.update(geometricTransformationMatrices[MOVE_LEFT_MATRIX]);
     }
     public void moveRight() {
-        RealMatrix moveRightMatrix = geometricTransformationMatrices[MOVE_RIGHT];
-        this.update(moveRightMatrix);
+        this.update(geometricTransformationMatrices[MOVE_RIGHT_MATRIX]);
     }
     public void moveUpward() {
-        RealMatrix moveUpwardMatrix = geometricTransformationMatrices[MOVE_UPWARD];
-        this.update(moveUpwardMatrix);
+        this.update(geometricTransformationMatrices[MOVE_UPWARD_MATRIX]);
     }
     public void moveDownward() {
-        RealMatrix moveDownwardMatrix = geometricTransformationMatrices[MOVE_DOWNWARD];
-        this.update(moveDownwardMatrix);
+        this.update(geometricTransformationMatrices[MOVE_DOWNWARD_MATRIX]);
     }
     // rotations
     public void rotateLeft() {
-        RealMatrix rotateLeftMatrix = geometricTransformationMatrices[ROTATE_LEFT];
-        this.update(rotateLeftMatrix);
+        this.update(geometricTransformationMatrices[ROTATE_LEFT_MATRIX]);
     }
     public void rotateRight() {
-        RealMatrix rotateRightMatrix = geometricTransformationMatrices[ROTATE_RIGHT];
-        this.update(rotateRightMatrix);
+        this.update(geometricTransformationMatrices[ROTATE_RIGHT_MATRIX]);
     }
     public void rotateUpward() {
-        RealMatrix rotateUpwardMatrix = geometricTransformationMatrices[ROTATE_UPWARD];
-        this.update(rotateUpwardMatrix);
+        this.update(geometricTransformationMatrices[ROTATE_UPWARD_MATRIX]);
     }
     public void rotateDownward() {
-        RealMatrix rotateDownwardMatrix = geometricTransformationMatrices[ROTATE_DOWNWARD];
-        this.update(rotateDownwardMatrix);
+        this.update(geometricTransformationMatrices[ROTATE_DOWNWARD_MATRIX]);
     }
     public void rotateTiltLeft() {
-        RealMatrix rotateTiltLeftMatrix = geometricTransformationMatrices[ROTATE_TILT_LEFT];
-        this.update(rotateTiltLeftMatrix);
+        this.update(geometricTransformationMatrices[ROTATE_TILT_LEFT_MATRIX]);
     }
     public void rotateTiltRight() {
-        RealMatrix rotateTiltRightMatrix = geometricTransformationMatrices[ROTATE_TILT_RIGHT];
-        this.update(rotateTiltRightMatrix);
+        this.update(geometricTransformationMatrices[ROTATE_TILT_RIGHT_MATRIX]);
     }
 }
