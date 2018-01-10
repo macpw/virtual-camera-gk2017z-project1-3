@@ -25,7 +25,7 @@ public class ChangeListenerForFocalDistanceJSlider implements ChangeListener {
         JSlider sourceJSlider = (JSlider)e.getSource();
         if (!sourceJSlider.getValueIsAdjusting()) {
             int value = sourceJSlider.getValue();
-            viewportModel.setDistanceBetweenObserverAndViewport((double)value);
+            viewportModel.setFocalDistance((double)value);
             focalDistanceJLabel.setText(Integer.toString(value));
         }
     }
