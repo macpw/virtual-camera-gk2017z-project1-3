@@ -54,6 +54,8 @@ public class ViewportModel extends Observable {
         this.edge3DToMockEdge3D = new HashMap<>();
         this.initEdge3DToLine2DHolderMap();// init edge3DToMockEdge3D inside
         this.initGeometricTransformationMatrices();
+        
+        this.updatePoint3DsSet(MatrixUtils.createRealIdentityMatrix(4));
     }
     
     // Getters and Setters
