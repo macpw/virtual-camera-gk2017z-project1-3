@@ -32,7 +32,7 @@ public class ViewportModel extends Observable {
     
     private Set<Point3D> point3DsSet;
     private Set<Edge3D> edge3DsSet;
-    private double distanceBetweenObserverAndViewport;
+    private double focalDistance = 200;// distance between observer and viewport
     private final int viewportWidth;
     private final int viewportHeight;
     
@@ -43,10 +43,9 @@ public class ViewportModel extends Observable {
     private double angleInDegrees = 1.0d;
     private final RealMatrix[] geometricTransformationMatrices = new RealMatrix[NUMBER_OF_MATRICES];
     
-    public ViewportModel(Set<Point3D> point3DsSet, Set<Edge3D> edge3DsSet, double distanceBetweenObserverAndViewport, int viewportWidth, int viewportHeight) {
+    public ViewportModel(Set<Point3D> point3DsSet, Set<Edge3D> edge3DsSet, int viewportWidth, int viewportHeight) {
         this.point3DsSet = point3DsSet;
         this.edge3DsSet = edge3DsSet;
-        this.distanceBetweenObserverAndViewport = distanceBetweenObserverAndViewport;
         this.viewportWidth = viewportWidth;
         this.viewportHeight = viewportHeight;
         
@@ -61,12 +60,12 @@ public class ViewportModel extends Observable {
     
     // Getters and Setters
     
-    public double getDistanceBetweenObserverAndViewport() {
-        return distanceBetweenObserverAndViewport;
+    public double getFocalDistance() {
+        return focalDistance;
     }
     
-    public void setDistanceBetweenObserverAndViewport(double distanceBetweenObserverAndViewport) {
-        this.distanceBetweenObserverAndViewport = distanceBetweenObserverAndViewport;
+    public void setFocalDistance(double focalDistance) {
+        this.focalDistance = focalDistance;
         this.update(geometricTransformationMatrices[IDENTITY_MATRIX]);
     }
     
@@ -265,23 +264,23 @@ public class ViewportModel extends Observable {
     }
     
     private void calculateLine2DOnViewport(Edge3D edge3D, Line2DHolder line2DHolder) {
-        double x1 = (edge3D.getFirst() .getX() * distanceBetweenObserverAndViewport) / edge3D.getFirst() .getZ();
-        double y1 = (edge3D.getFirst() .getY() * distanceBetweenObserverAndViewport) / edge3D.getFirst() .getZ();
-        double x2 = (edge3D.getSecond().getX() * distanceBetweenObserverAndViewport) / edge3D.getSecond().getZ();
-        double y2 = (edge3D.getSecond().getY() * distanceBetweenObserverAndViewport) / edge3D.getSecond().getZ();
+        double x1 = (edge3D.getFirst() .getX() * focalDistance) / edge3D.getFirst() .getZ();
+        double y1 = (edge3D.getFirst() .getY() * focalDistance) / edge3D.getFirst() .getZ();
+        double x2 = (edge3D.getSecond().getX() * focalDistance) / edge3D.getSecond().getZ();
+        double y2 = (edge3D.getSecond().getY() * focalDistance) / edge3D.getSecond().getZ();
         x1 =  x1 + (viewportWidth  / 2.0d);
         y1 = -y1 + (viewportHeight / 2.0d);
         x2 =  x2 + (viewportWidth  / 2.0d);
         y2 = -y2 + (viewportHeight / 2.0d);
         line2DHolder.getLine2D().setLine(x1, y1, x2, y2);
         
-        if (edge3D.getFirst().getZ() > distanceBetweenObserverAndViewport) {
+        if (edge3D.getFirst().getZ() > focalDistance) {
             line2DHolder.setFirstInFrontOfViewport(true);
         } else {
             line2DHolder.setFirstInFrontOfViewport(false);
         }
         
-        if (edge3D.getSecond().getZ() > distanceBetweenObserverAndViewport) {
+        if (edge3D.getSecond().getZ() > focalDistance) {
             line2DHolder.setSecondInFrontOfViewport(true);
         } else {
             line2DHolder.setSecondInFrontOfViewport(false);
@@ -296,8 +295,8 @@ public class ViewportModel extends Observable {
             // mockEdge3D if necessery
             Point3D firstPoint3D  = keyEdge3D.getFirst();
             Point3D secondPoint3D = keyEdge3D.getSecond();
-            if (        (firstPoint3D.getZ() <= distanceBetweenObserverAndViewport || secondPoint3D.getZ() <= distanceBetweenObserverAndViewport) 
-                    && !(firstPoint3D.getZ() <= distanceBetweenObserverAndViewport && secondPoint3D.getZ() <= distanceBetweenObserverAndViewport)) {
+            if (        (firstPoint3D.getZ() <= focalDistance || secondPoint3D.getZ() <= focalDistance) 
+                    && !(firstPoint3D.getZ() <= focalDistance && secondPoint3D.getZ() <= focalDistance)) {
                 Edge3D mockEdge3D = edge3DToMockEdge3D.get(keyEdge3D);
                 // update mockEdge3D by updating ponits
                 Point3D firstMockPoint3D = mockEdge3D.getFirst();
@@ -305,7 +304,7 @@ public class ViewportModel extends Observable {
                 Point3D secondMockPoint3D = mockEdge3D.getSecond();
                 secondMockPoint3D.setCoordinates(secondPoint3D.getCoordinates());
                 // mock one of points
-                if (firstMockPoint3D.getZ() <= distanceBetweenObserverAndViewport) {
+                if (firstMockPoint3D.getZ() <= focalDistance) {
                     Point3D calculatedFirstMockPoint3D = calculateMockPoint3D(firstMockPoint3D, secondMockPoint3D);
                     firstMockPoint3D.setCoordinates(calculatedFirstMockPoint3D.getCoordinates());
                 } else {
@@ -364,23 +363,23 @@ public class ViewportModel extends Observable {
          ******************************************/
         // in this situation: A == 0; B == 0;
         double planeFactorC = 1;
-        double planeFactorD = -(distanceBetweenObserverAndViewport);
+        double planeFactorD = -focalDistance;
         /*******************************
          * line's parametric equation: *
          * x = x0 + t*vx               *
          * y = y0 + t*vy               *
          * z = z0 + t*vz               *
          *******************************/
-        //////////////////////////////////////
-        // plane's equation and line's parametric equation together
-        // calculate t
-        // A(px + t*vx) + B(py + t*vy) + C(pz + t*vz) + D = 0
-        // Apx + At*vx  + Bpy + Bt*vy  + Cpz + Ct*vz  + D = 0
-        // t(Avx  + Bvy + Cvz) + Apx + Bpy + Cpz + D = 0
-        // t = -(Apx + Bpy + Cpz + D) / (Avx  + Bvy + Cvz)
-        // then point P(x, y, z) is
-        // P(px + t*vx, py + t*vy, pz + t*vz)
-        //////////////////////////////////////
+        //////////////////////////////////////////////////////////////
+        // plane's equation and line's parametric equation together //
+        // calculate t                                              //
+        // A(px + t*vx) + B(py + t*vy) + C(pz + t*vz) + D = 0       //
+        // Apx + At*vx  + Bpy + Bt*vy  + Cpz + Ct*vz  + D = 0       //
+        // t(Avx  + Bvy + Cvz) + Apx + Bpy + Cpz + D = 0            //
+        // t = -(Apx + Bpy + Cpz + D) / (Avx  + Bvy + Cvz)          //
+        // then point P(x, y, z) is                                 //
+        // P(px + t*vx, py + t*vy, pz + t*vz)                       //
+        //////////////////////////////////////////////////////////////
         double sum_Apx_Bpy_Cpz_D = planeFactorC*pz + planeFactorD;
         double sum_Avx_Bvy_Cvz   = planeFactorC*vz;
         double t = (-sum_Apx_Bpy_Cpz_D)/sum_Avx_Bvy_Cvz;
@@ -389,12 +388,12 @@ public class ViewportModel extends Observable {
     }
     
     private void calculatePoint2D(Point3D point3D) {
-        double x = (point3D.getX() * distanceBetweenObserverAndViewport) / point3D.getZ();
-        double y = (point3D.getY() * distanceBetweenObserverAndViewport) / point3D.getZ();
+        double x = (point3D.getX() * focalDistance) / point3D.getZ();
+        double y = (point3D.getY() * focalDistance) / point3D.getZ();
         x =  x + (viewportWidth  / 2.0d);
         y = -y + (viewportHeight / 2.0d);
         point3D.getPoint2D().setLocation(x, y);
-        if (point3D.getZ() >= distanceBetweenObserverAndViewport) {
+        if (point3D.getZ() >= focalDistance) {
             point3D.setInFrontOfViewport(true);
         } else {
             point3D.setInFrontOfViewport(false);
