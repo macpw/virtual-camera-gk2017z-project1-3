@@ -401,6 +401,14 @@ public class ViewportModel extends Observable {
         }
     }
     
+    private void update(RealMatrix transformationMatrix) {
+        this.updatePoint3DsSet(transformationMatrix);
+        this.updateEdge3DsSet();
+        this.updateEdge3DToLine2DHolderMap();
+        this.setChanged();
+        this.notifyObservers();
+    }
+    
     // motions
     public void moveForward() {
         RealMatrix moveForwardMatrix = geometricTransformationMatrices[MOVE_FORWARD];
