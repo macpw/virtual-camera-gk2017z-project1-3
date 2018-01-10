@@ -1,9 +1,6 @@
 package com.mycompany.virtual_camera.model;
 
 import java.awt.geom.Line2D;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Observable;
 import java.util.Set;
 import org.apache.commons.math3.linear.MatrixUtils;
@@ -30,25 +27,21 @@ public class ViewportModel extends Observable {
     private static final int ROTATE_TILT_RIGHT_MATRIX = 12;
     private static final int NUMBER_OF_MATRICES        = 13;
     
-    private Set<Point3D> point3DsSet;
-    private Set<Edge3D> edge3DsSet;
-    private double focalDistance = 200;// distance between observer and viewport
+    private final RealMatrix[] geometricTransformationMatrices = new RealMatrix[NUMBER_OF_MATRICES];
     private final int viewportWidth;
     private final int viewportHeight;
-    
-    
+    private final Set<Point3D> point3DsSet;
+    private final Set<Edge3D> edge3DsSet;
+    private double focalDistance = 200;// distance between observer and viewport
     private double step = 10.0d;
     private double angleInDegrees = 1.0d;
-    private final RealMatrix[] geometricTransformationMatrices = new RealMatrix[NUMBER_OF_MATRICES];
     
-    public ViewportModel(Set<Point3D> point3DsSet, Set<Edge3D> edge3DsSet, int viewportWidth, int viewportHeight) {
-        this.point3DsSet = point3DsSet;
-        this.edge3DsSet = edge3DsSet;
+    public ViewportModel(int viewportWidth, int viewportHeight, Set<Point3D> point3DsSet, Set<Edge3D> edge3DsSet) {
+        this.initGeometricTransformationMatrices();
         this.viewportWidth = viewportWidth;
         this.viewportHeight = viewportHeight;
-        
-        this.initGeometricTransformationMatrices();
-        
+        this.point3DsSet = point3DsSet;
+        this.edge3DsSet = edge3DsSet;
         this.updatePoint3DsSet(geometricTransformationMatrices[IDENTITY_MATRIX]);
         this.updateEdge3DsSet();
     }
@@ -243,6 +236,27 @@ public class ViewportModel extends Observable {
         geometricTransformationMatrices[ROTATE_TILT_RIGHT_MATRIX].setEntry(1, 1,  cosPositiveAngle);
     }
     
+    private void calculatePoint2D(Point3D point3D) {
+        double x = (point3D.getX() * focalDistance) / point3D.getZ();
+        double y = (point3D.getY() * focalDistance) / point3D.getZ();
+        x =  x + (viewportWidth  / 2.0d);
+        y = -y + (viewportHeight / 2.0d);
+        point3D.getPoint2D().setLocation(x, y);
+        if (point3D.getZ() >= focalDistance) {
+            point3D.setInFrontOfViewport(true);
+        } else {
+            point3D.setInFrontOfViewport(false);
+        }
+    }
+    
+    private void updatePoint3DsSet(RealMatrix transformationMatrix) {
+        for (Point3D point3D : point3DsSet) {
+            RealMatrix coordinates = point3D.getCoordinates();
+            point3D.setCoordinates(transformationMatrix.multiply(coordinates));
+            this.calculatePoint2D(point3D);
+        }
+    }
+    
     private void updateEdge3DsSet() {
         for (Edge3D edge3D : edge3DsSet) {
             edge3D.updateMockPoints();
@@ -309,27 +323,6 @@ public class ViewportModel extends Observable {
         double t = (-sum_Apx_Bpy_Cpz_D)/sum_Avx_Bvy_Cvz;
         Point3D mockPoint3D = new Point3D(px + t*vx, py + t*vy, pz + t*vz);
         return mockPoint3D;
-    }
-    
-    private void calculatePoint2D(Point3D point3D) {
-        double x = (point3D.getX() * focalDistance) / point3D.getZ();
-        double y = (point3D.getY() * focalDistance) / point3D.getZ();
-        x =  x + (viewportWidth  / 2.0d);
-        y = -y + (viewportHeight / 2.0d);
-        point3D.getPoint2D().setLocation(x, y);
-        if (point3D.getZ() >= focalDistance) {
-            point3D.setInFrontOfViewport(true);
-        } else {
-            point3D.setInFrontOfViewport(false);
-        }
-    }
-    
-    private void updatePoint3DsSet(RealMatrix transformationMatrix) {
-        for (Point3D point3D : point3DsSet) {
-            RealMatrix coordinates = point3D.getCoordinates();
-            point3D.setCoordinates(transformationMatrix.multiply(coordinates));
-            this.calculatePoint2D(point3D);
-        }
     }
     
     private void update(RealMatrix transformationMatrix) {
