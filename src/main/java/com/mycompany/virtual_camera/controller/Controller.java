@@ -45,8 +45,8 @@ public class Controller {
     private void addListenerToFocalDistanceJPanel() {
         JLabel focalDistanceJLabel = view.getFocalDistanceJPanel().getFocalDistanceJLabel();
         JSlider focalDistanceJSlider = view.getFocalDistanceJPanel().getFocalDistanceJSlider();
-        focalDistanceJLabel.setText(Integer.toString((int)viewportModel.getDistanceBetweenObserverAndViewport()));
-        focalDistanceJSlider.setValue((int)viewportModel.getDistanceBetweenObserverAndViewport());
+        focalDistanceJLabel.setText(Integer.toString((int)viewportModel.getFocalDistance()));
+        focalDistanceJSlider.setValue((int)viewportModel.getFocalDistance());
         ChangeListenerForFocalDistanceJSlider changeListenerForFocalDistanceJSlider = new ChangeListenerForFocalDistanceJSlider(viewportModel, focalDistanceJLabel);
         focalDistanceJSlider.addChangeListener(changeListenerForFocalDistanceJSlider);
     }
