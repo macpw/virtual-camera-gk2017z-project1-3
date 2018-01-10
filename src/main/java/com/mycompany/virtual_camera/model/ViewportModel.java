@@ -101,6 +101,10 @@ public class ViewportModel extends Observable {
         return edge3DToLine2DHolderMap.values();
     }
     
+    public Set<Edge3D> getEdge3DsSet() {
+        return edge3DsSet;
+    }
+    
     // Methods
     
     private void initGeometricTransformationMatrices() {
@@ -350,7 +354,7 @@ public class ViewportModel extends Observable {
         x =  x + (viewportWidth  / 2.0d);
         y = -y + (viewportHeight / 2.0d);
         point3D.getPoint2D().setLocation(x, y);
-        if (point3D.getZ() > distanceBetweenObserverAndViewport) {
+        if (point3D.getZ() >= distanceBetweenObserverAndViewport) {
             point3D.setInFrontOfViewport(true);
         } else {
             point3D.setInFrontOfViewport(false);
