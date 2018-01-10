@@ -412,99 +412,51 @@ public class ViewportModel extends Observable {
     // motions
     public void moveForward() {
         RealMatrix moveForwardMatrix = geometricTransformationMatrices[MOVE_FORWARD];
-        this.updatePoint3DsSet(moveForwardMatrix);
-        this.updateEdge3DsSet();
-        this.updateEdge3DToLine2DHolderMap();
-        this.setChanged();
-        this.notifyObservers();
+        this.update(moveForwardMatrix);
     }
     public void moveBackward() {
         RealMatrix moveBackwardMatrix = geometricTransformationMatrices[MOVE_BACKWARD];
-        this.updatePoint3DsSet(moveBackwardMatrix);
-        this.updateEdge3DsSet();
-        this.updateEdge3DToLine2DHolderMap();
-        this.setChanged();
-        this.notifyObservers();
+        this.update(moveBackwardMatrix);
     }
     public void moveLeft() {
         RealMatrix moveLeftMatrix = geometricTransformationMatrices[MOVE_LEFT];
-        this.updatePoint3DsSet(moveLeftMatrix);
-        this.updateEdge3DsSet();
-        this.updateEdge3DToLine2DHolderMap();
-        this.setChanged();
-        this.notifyObservers();
+        this.update(moveLeftMatrix);
     }
     public void moveRight() {
         RealMatrix moveRightMatrix = geometricTransformationMatrices[MOVE_RIGHT];
-        this.updatePoint3DsSet(moveRightMatrix);
-        this.updateEdge3DsSet();
-        this.updateEdge3DToLine2DHolderMap();
-        this.setChanged();
-        this.notifyObservers();
+        this.update(moveRightMatrix);
     }
     public void moveUpward() {
         RealMatrix moveUpwardMatrix = geometricTransformationMatrices[MOVE_UPWARD];
-        this.updatePoint3DsSet(moveUpwardMatrix);
-        this.updateEdge3DsSet();
-        this.updateEdge3DToLine2DHolderMap();
-        this.setChanged();
-        this.notifyObservers();
+        this.update(moveUpwardMatrix);
     }
     public void moveDownward() {
         RealMatrix moveDownwardMatrix = geometricTransformationMatrices[MOVE_DOWNWARD];
-        this.updatePoint3DsSet(moveDownwardMatrix);
-        this.updateEdge3DsSet();
-        this.updateEdge3DToLine2DHolderMap();
-        this.setChanged();
-        this.notifyObservers();
+        this.update(moveDownwardMatrix);
     }
     // rotations
     public void rotateLeft() {
         RealMatrix rotateLeftMatrix = geometricTransformationMatrices[ROTATE_LEFT];
-        this.updatePoint3DsSet(rotateLeftMatrix);
-        this.updateEdge3DsSet();
-        this.updateEdge3DToLine2DHolderMap();
-        this.setChanged();
-        this.notifyObservers();
+        this.update(rotateLeftMatrix);
     }
     public void rotateRight() {
         RealMatrix rotateRightMatrix = geometricTransformationMatrices[ROTATE_RIGHT];
-        this.updatePoint3DsSet(rotateRightMatrix);
-        this.updateEdge3DsSet();
-        this.updateEdge3DToLine2DHolderMap();
-        this.setChanged();
-        this.notifyObservers();
+        this.update(rotateRightMatrix);
     }
     public void rotateUpward() {
         RealMatrix rotateUpwardMatrix = geometricTransformationMatrices[ROTATE_UPWARD];
-        this.updatePoint3DsSet(rotateUpwardMatrix);
-        this.updateEdge3DsSet();
-        this.updateEdge3DToLine2DHolderMap();
-        this.setChanged();
-        this.notifyObservers();
+        this.update(rotateUpwardMatrix);
     }
     public void rotateDownward() {
         RealMatrix rotateDownwardMatrix = geometricTransformationMatrices[ROTATE_DOWNWARD];
-        this.updatePoint3DsSet(rotateDownwardMatrix);
-        this.updateEdge3DsSet();
-        this.updateEdge3DToLine2DHolderMap();
-        this.setChanged();
-        this.notifyObservers();
+        this.update(rotateDownwardMatrix);
     }
     public void rotateTiltLeft() {
         RealMatrix rotateTiltLeftMatrix = geometricTransformationMatrices[ROTATE_TILT_LEFT];
-        this.updatePoint3DsSet(rotateTiltLeftMatrix);
-        this.updateEdge3DsSet();
-        this.updateEdge3DToLine2DHolderMap();
-        this.setChanged();
-        this.notifyObservers();
+        this.update(rotateTiltLeftMatrix);
     }
     public void rotateTiltRight() {
         RealMatrix rotateTiltRightMatrix = geometricTransformationMatrices[ROTATE_TILT_RIGHT];
-        this.updatePoint3DsSet(rotateTiltRightMatrix);
-        this.updateEdge3DsSet();
-        this.updateEdge3DToLine2DHolderMap();
-        this.setChanged();
-        this.notifyObservers();
+        this.update(rotateTiltRightMatrix);
     }
 }
