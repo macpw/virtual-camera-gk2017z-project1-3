@@ -22,15 +22,17 @@ public class RunMVC implements Runnable {
     
     @Override
     public void run() {
-        Cuboid cuboid = new Cuboid(-100, 0, 250, 200, 250, 300);
+        Cuboid cuboid_0 = new Cuboid(-100, 0, 250, 200, 250, 300);
+        Cuboid cuboid_1 = new Cuboid(-160, 100, 300, -100, -100, 200);
         SpatialShapesCollection spatialShapesCollection = new SpatialShapesCollection();
-        spatialShapesCollection.addSpatialShape(cuboid);
+        spatialShapesCollection.addSpatialShape(cuboid_0);
+        spatialShapesCollection.addSpatialShape(cuboid_1);
         Set<Point3D> point3DsSet = spatialShapesCollection.getPoint3DsSet();
         Set<Edge3D> edge3DsSet = spatialShapesCollection.getEdge3DsSet();
-        ViewportModel viewportModel = new ViewportModel(point3DsSet, edge3DsSet, 200, 600, 400);
+        ViewportModel viewportModel = new ViewportModel(600, 400, point3DsSet, edge3DsSet);
         View view = new View(viewportModel.getViewportWidth(), viewportModel.getViewportHeight());
         ViewportJPanel viewportJPanel = view.getViewportJPanel();
-        viewportJPanel.setLine2DHoldersCollection(viewportModel.getCollectionOfLine2DHolder());
+        viewportJPanel.setEdge3DsCollection(viewportModel.getEdge3DsSet());
         viewportModel.addObserver(viewportJPanel);
         Controller controller = new Controller(viewportModel, view);
     }
